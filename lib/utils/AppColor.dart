@@ -8,6 +8,7 @@ class AppColor{
   static Color dark = Colors.black;
   static Color black = Colors.black;
   static LinearGradient gradient = const LinearGradient(colors: [Colors.black]);
+  static LinearGradient navGradient = const LinearGradient(colors: [Colors.black]);
   static BoxShadow shadow = const BoxShadow();
 
   setColors(bool state){
@@ -21,6 +22,11 @@ class AppColor{
     colors: [primary,secondary], 
     begin: Alignment.centerLeft,
     end: Alignment.centerRight
+    );
+    navGradient = LinearGradient(
+    colors: [primary.withOpacity(0.2),Colors.transparent], 
+    begin: Alignment.bottomCenter,
+    end: Alignment.topCenter
     );
 
     shadow = BoxShadow(
