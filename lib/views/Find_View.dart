@@ -1,18 +1,46 @@
+import 'dart:ffi';
+import 'package:cuentas_ptt/class/Record.dart';
 import 'package:cuentas_ptt/utils/AppColor.dart';
+import 'package:cuentas_ptt/utils/Database.dart';
 import 'package:cuentas_ptt/views/widgets/Record_item.dart';
 import 'package:flutter/material.dart';
 
 class FindView extends StatefulWidget{
    Function getState;
+
    FindView({super.key, required this.getState});
 
   @override
   _FindState createState() => _FindState(getState: getState);
+
+
+  
 }
 
 class _FindState extends State<FindView>{
   Function getState;
   _FindState({required this.getState});
+  List<Record> list = List.empty(growable: true);
+
+  handleRegisters(state)async{
+    list = List.empty(growable: true);
+    List<Record> dbList = await Database().getRecordsByType(state);
+    if(dbList.isNotEmpty){
+      list = dbList;
+    }
+  }
+
+  @override
+  void initState() {
+    handleRegisters(getState());
+    super.initState();
+  }
+
+  @override
+  void setState(VoidCallback fn) {
+    handleRegisters(getState());
+    super.setState(fn);
+  }
 
     @override
   Widget build(BuildContext context) {
@@ -41,7 +69,7 @@ class _FindState extends State<FindView>{
                     border: InputBorder.none,
                     enabledBorder: InputBorder.none,
                     hintStyle: TextStyle(color: Colors.white70),
-                    hintText: "Buscar por"
+                    hintText: "Buscar registro"
                   ),
                 ),
               )),
@@ -71,13 +99,13 @@ class _FindState extends State<FindView>{
             itemBuilder: (context, i){
               return Container(
                       padding: EdgeInsets.symmetric(horizontal:20, vertical: 5),
-                      child: RecordItem(getState: getState,),
+                      child: RecordItem(getState: getState, record: list[i]),
                     );  
             }, 
             separatorBuilder: (context, i){
               return SizedBox();
             }, 
-            itemCount: 10)
+            itemCount: list.length)
         ],
       ),
       

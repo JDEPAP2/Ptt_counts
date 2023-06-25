@@ -69,7 +69,7 @@ class _PageSwitcherState extends State<PageSwitcher> {
       extendBody: true,
       body: Stack(
         children: [
-          [HomeView(getState: getState), FindView(getState: getState), PeopleView(), ExportView()][_selectedIndex],
+          [HomeView(getState: getState), FindView(getState: getState), PeopleView(getState: getState), ExportView(getState: getState)][_selectedIndex],
           BottomGradientWidget(),
         ],
       ),

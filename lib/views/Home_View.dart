@@ -1,5 +1,6 @@
 import 'package:cuentas_ptt/utils/Database.dart';
 import 'package:cuentas_ptt/views/widgets/Record_item.dart';
+import 'package:cuentas_ptt/views/widgets/modals/Add_Register.dart';
 import 'package:flutter/material.dart';
 import 'package:cuentas_ptt/utils/AppColor.dart';
 import 'package:flutter_switch/flutter_switch.dart';
@@ -24,10 +25,17 @@ class _StateHome extends State<HomeView>{
     print(res);
   }
 
+  handleModal(Widget modal) async{
+    return await showModalBottomSheet(
+      backgroundColor: Colors.transparent,
+      context: context, 
+      isScrollControlled: true,
+      builder: (builder) => modal);
+  }
+
     @override
   Widget build(BuildContext context) {
     bool rtype = getState();
-    print("entro2");
     return Scaffold(
       backgroundColor: AppColor.black,
       body: ListView(
@@ -42,7 +50,7 @@ class _StateHome extends State<HomeView>{
               color: Colors.white.withOpacity(0.2),
             ),
             child: InkWell(
-              onTap: ()=>hanldeInsert(),
+              onTap: ()=> handleModal(AddRegister()),
               child: Row(
               children: [
                 Container(
@@ -78,7 +86,7 @@ class _StateHome extends State<HomeView>{
             ))
           ,Container(
             padding: EdgeInsets.all(20),
-            child: RecordItem(getState: getState,),
+            child: null,
           )      
         ],
       ),

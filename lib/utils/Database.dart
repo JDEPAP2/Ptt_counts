@@ -16,8 +16,8 @@ class Database {
 
   convertToRecord(List res){
     return res.map((e) {
-      return Record(id: e['id'], nameId: e['nameId'], value: e['value'], date: e['date'], observation: e['observation']);
-    });
+      return Record(id: e['id'], nameId: e['nameId'], name: e['name'], type: e['type'], value: e['value'], date: e['date'], observation: e['observation']);
+    }).toList();
   }
 
   getPeople() async{
@@ -27,7 +27,7 @@ class Database {
     return await coll.find().toList();
   }
 
-  getPersonById(String id) async{
+  getPersonById(ObjectId id) async{
     db = await Db.create(uri);
     await db.open();
     var coll = db.collection('People');
@@ -41,7 +41,14 @@ class Database {
     return await coll.findOne(where.eq('name', name));
   }
 
-  getRecordById(String id) async{
+  getRecords() async{
+    db = await Db.create(uri);
+    await db.open();
+    var coll = db.collection('Records');
+    return await coll.find().toList();
+  }
+
+  getRecordById(ObjectId id) async{
     db = await Db.create(uri);
     await db.open();
     var coll = db.collection('Records');
@@ -55,67 +62,67 @@ class Database {
     return convertToRecord(await coll.find(where.eq("type", type)).toList());
   }
 
-  getRecordsByPerson(String id) async{
+  getRecordsByPerson(ObjectId id, bool btype) async{
     db = await Db.create(uri);
     await db.open();
     var coll = db.collection('Records');
-    return convertToRecord(await coll.find(where.eq("person_id",id)).toList());
+    return convertToRecord(await coll.find(where.eq("person_id",id).and(where.eq("b_type",btype))).toList());
   }
 
-  getRecordsByPeople(List<String> id) async{
+  getRecordsByPeople(List<ObjectId> id, bool btype) async{
     db = await Db.create(uri);
     await db.open();
     var coll = db.collection('Records');
-    return convertToRecord(await coll.find(where.nin('person_id', id)).toList());
+    return convertToRecord(await coll.find(where.nin('person_id', id).and(where.eq("b_type",btype))).toList());
   }
 
-  getRecordsByDate(DateTime date) async{
+  getRecordsByDate(DateTime date, bool btype) async{
     db = await Db.create(uri);
     await db.open();
     var coll = db.collection('Records');
-    return convertToRecord(await coll.find(where.eq("date", date)).toList());
+    return convertToRecord(await coll.find(where.eq("date", date).and(where.eq("b_type",btype))).toList());
   }
 
-  getRecordsByTwoDates(DateTime startDate, DateTime endDate) async{
+  getRecordsByTwoDates(DateTime startDate, DateTime endDate, bool btype) async{
     db = await Db.create(uri);
     await db.open();
     var coll = db.collection('Records');
-    return convertToRecord(await coll.find(where.inRange("date", startDate, endDate)).toList());
+    return convertToRecord(await coll.find(where.inRange("date", startDate, endDate).and(where.eq("b_type",btype))).toList());
   }
 
-  getRecordsBefore(DateTime date) async{
+  getRecordsBefore(DateTime date, bool btype) async{
     db = await Db.create(uri);
     await db.open();
     var coll = db.collection('Records');
-    return convertToRecord(await coll.find(where.lte('date', date)).toList());
+    return convertToRecord(await coll.find(where.lte('date', date).and(where.eq("b_type",btype))).toList());
   }
 
-  getRecordsAfter(DateTime date) async{
+  getRecordsAfter(DateTime date, bool btype) async{
     db = await Db.create(uri);
     await db.open();
     var coll = db.collection('Records');
-    return convertToRecord(await coll.find(where.gte('date', date)).toList());
+    return convertToRecord(await coll.find(where.gte('date', date).and(where.eq("b_type",btype))).toList());
   }
 
-  getRecordByValue(double value)async{
+  getRecordByValue(double value, bool btype)async{
     db = await Db.create(uri);
     await db.open();
     var coll = db.collection('Records');
-    return convertToRecord(await coll.find(where.eq('value', value)).toList());
+    return convertToRecord(await coll.find(where.eq('value', value).and(where.eq("b_type",btype))).toList());
   }
 
-  getRecordGreaterValue(double value)async{
+  getRecordGreaterValue(double value, bool btype)async{
     db = await Db.create(uri);
     await db.open();
     var coll = db.collection('Records');
-    return convertToRecord(await coll.find(where.gte('value', value)).toList());
+    return convertToRecord(await coll.find(where.gte('value', value).and(where.eq("b_type",btype))).toList());
   }
   
-  getRecordLessValue(double value)async{
+  getRecordLessValue(double value, bool btype)async{
     db = await Db.create(uri);
     await db.open();
     var coll = db.collection('Records');
-    return convertToRecord(await coll.find(where.lte('value', value)).toList());
+    return convertToRecord(await coll.find(where.lte('value', value).and(where.eq("b_type",btype))).toList());
   }
 
   insertRecord(Record r) async{
@@ -124,6 +131,7 @@ class Database {
     var coll = db.collection('Records');
     var data = {
       'nameId': r.nameId,
+      'name': r.name,
       'value': r.value,
       'date': r.date,
       'observation': r.observation
@@ -138,7 +146,7 @@ class Database {
     return await coll.insertOne({'name': name});
   }
 
-  removePerson(String id) async{
+  removePerson(ObjectId id) async{
     db = await Db.create(uri);
     await db.open();
     var coll = db.collection('Records');
@@ -147,14 +155,14 @@ class Database {
     return await coll.deleteOne(where.eq('_id', id));
   }
   
-  removeRecord(String id) async{
+  removeRecord(ObjectId id) async{
     db = await Db.create(uri);
     await db.open();
     var coll = db.collection('Records');
     return await coll.deleteOne(where.eq('_id', id));
   }
 
-  alterRecord(String id, Record newR) async{
+  alterRecord(ObjectId id, Record newR) async{
     db = await Db.create(uri);
     await db.open();
     var coll = db.collection('Records');
@@ -167,7 +175,7 @@ class Database {
     if(res != null ) return await coll.replaceOne(where.eq('_id', id), res);
   }
 
-  alterPerson(String id, String newName) async{
+  alterPerson(ObjectId id, String newName) async{
     db = await Db.create(uri);
     await db.open();
     var coll = db.collection('People');
@@ -175,4 +183,5 @@ class Database {
     res?['name'] = newName;
     if(res != null ) return await coll.replaceOne(where.eq('_id', id), res);
   }
+
 }
