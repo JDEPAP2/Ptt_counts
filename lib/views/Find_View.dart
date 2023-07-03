@@ -1,4 +1,3 @@
-import 'dart:ffi';
 import 'package:cuentas_ptt/class/Record.dart';
 import 'package:cuentas_ptt/utils/AppColor.dart';
 import 'package:cuentas_ptt/utils/Database.dart';
@@ -21,6 +20,7 @@ class _FindState extends State<FindView>{
   Function getState;
   _FindState({required this.getState});
   List<Record> list = List.empty(growable: true);
+  double total = 0;
 
   handleRegisters(state)async{
     list = List.empty(growable: true);
@@ -32,13 +32,13 @@ class _FindState extends State<FindView>{
 
   @override
   void initState() {
-    handleRegisters(getState());
+    // handleRegisters(getState());
     super.initState();
   }
 
   @override
   void setState(VoidCallback fn) {
-    handleRegisters(getState());
+    // handleRegisters(getState());
     super.setState(fn);
   }
 
@@ -93,7 +93,9 @@ class _FindState extends State<FindView>{
           ),
 
           SizedBox(height: 20),
-          ListView.separated(
+          Container(
+            height: MediaQuery.of(context).size.height * 0.65,
+            child: ListView.separated(
             shrinkWrap: true,
             physics: BouncingScrollPhysics(),
             itemBuilder: (context, i){
@@ -105,7 +107,21 @@ class _FindState extends State<FindView>{
             separatorBuilder: (context, i){
               return SizedBox();
             }, 
-            itemCount: list.length)
+            itemCount: list.length),
+          ),
+          Container(
+            height: 200,
+            padding: EdgeInsets.symmetric(vertical: 20,horizontal: 30),
+            margin: EdgeInsets.only(bottom: 15),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Container(height: 2,color: AppColor.white.withOpacity(0.8)),
+                Container(padding: EdgeInsets.all(5),
+                  child: Text("$total", style: TextStyle(color: Colors.white, fontSize: 30)))
+              ],
+            ),
+          )
         ],
       ),
       

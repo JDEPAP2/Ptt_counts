@@ -66,3 +66,14 @@ class FormatValue{
     return res;
   }
 }
+
+class FormatText{
+  static toFirstUpperCase(String s){
+    List<String> chars = s.split("");
+    chars[0] = chars[0].toUpperCase();
+    String res = "";
+    chars.forEach((e)=> res +=e);
+    return res;
+  }
+
+}

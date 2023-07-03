@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:objectid/objectid.dart';
 import 'package:path_provider/path_provider.dart';
 import '../class/record.dart';
 
@@ -10,6 +11,7 @@ class DataManager{
     try { 
           String path= (await getApplicationDocumentsDirectory()).path;
           final File file = File('$path/$typeFile.txt');
+          
 
           if(!(await file.existsSync())){
             file.writeAsString("");
@@ -20,8 +22,10 @@ class DataManager{
           List<String> lines = content.split(";");
           for (var element in lines) {
             if(element == ""){continue;}
-            List<String> line = element.split(",");
-            data.add(line);
+            else{
+              List<String> line = element.split(",");
+              data.add(line);
+            }
           }
         // ignore: empty_catches
         } catch (e) {
@@ -30,28 +34,31 @@ class DataManager{
     return data;
   }
 
-  static writeData(List<dynamic> data ) async{
+  static writeData(String typeFile, List<dynamic> data ) async{
     try {
           String path= (await getApplicationDocumentsDirectory()).path;
-          final File file = File('$path/Pttdata.txt');
-
+          final File file = File('$path/$typeFile.txt');
           if(!(await file.exists())){
             file.writeAsString("");
           }
 
           String res = "";
           data.forEach((line) {
-            String res = '';
+            line = line.toList();
             for (var i = 0; i < line.length; i++) {
-              if( i == line.length-1){
-                res += line[i].toString() + ",";
+              if( i != line.length-1){
+                if(line[i] is ObjectId ){
+                  res += line[i].hexString + ",";
+                }else{
+                  res += line[i].toString() + ",";
+                }
               }else{
                 res += line[i].toString() + ";";
               }
             }
           });
           file.writeAsStringSync(res);
-
+          print("-------------- pasooo ------------------");
         } catch (e) {
           print("------------------------errrrrorrrr-----------------------------\n" + e.toString());
     }

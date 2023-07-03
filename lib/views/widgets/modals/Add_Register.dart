@@ -2,12 +2,15 @@ import 'dart:math';
 import 'package:cuentas_ptt/class/Record.dart';
 import 'package:cuentas_ptt/utils/Database.dart';
 import 'package:cuentas_ptt/utils/Format.dart';
+import 'package:cuentas_ptt/utils/PeopleController.dart';
+import 'package:cuentas_ptt/utils/RecordsController.dart';
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:direct_select_flutter/direct_select_item.dart';
 import 'package:direct_select_flutter/direct_select_list.dart';
 import 'package:flutter/material.dart';
 import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter/services.dart';
+import 'package:objectid/objectid.dart';
 import 'package:quickalert/quickalert.dart';
 
 
@@ -19,35 +22,6 @@ class AddRegister extends StatefulWidget{
 class _AddRegisterState extends State<AddRegister>{
 
   List People = List.empty(growable: true);
-  late Database db;
-
-  handlePeople()async{
-    People = List.empty(growable: true);
-    List peopleDb = await db.getPeople();
-    if (peopleDb != null){
-      peopleDb.forEach((element) {People.add(element["name"]);});
-    }
-    print(People);
-  }
-
-  handlePerson(String name)async{
-    var person = await db.getPersonByName(name);
-    if(person == null){
-      person = await db.insertPerson(name);
-      if(person.isSuccess)
-        return person.id;
-      return null;
-    }
-    return person["_id"];
-  }
-
-  handleInsert(Record record)async{
-    var person = await db.insertRecord(record);
-    return person.isSuccess;
-  }
-
-
-  
 
   late String fecha;
   late String value;
@@ -57,22 +31,25 @@ class _AddRegisterState extends State<AddRegister>{
 
   @override
   void initState() {
-    db = Database();
+    // db = Database();
     fecha = FormatDate.dateToString(DateTime.now());
     value = "";
     obser = "";
     name = "";
     typeR = null;
-    handlePeople();
+    // handlePeople();
     super.initState();
   }
 
-  String toFirstUpperCase(String s){
-    List<String> chars = s.split("");
-    chars[0] = chars[0].toUpperCase();
-    String res = "";
-    chars.forEach((e)=> res +=e);
-    return res;
+  handlePerson(String name) async{
+    if (!(await PeopleController.existPerson(name))){
+      bool? res = await PeopleController.addPerson(name);
+      if(res != true){
+        print(res);
+        return null;
+      }
+    }
+    return (await PeopleController.findPersonByName(name))?.id;
   }
 
 
@@ -89,6 +66,20 @@ class _AddRegisterState extends State<AddRegister>{
     TextEditingController obserController = TextEditingController(text: obser);
     obserController.selection = TextSelection.fromPosition(TextPosition(offset: obserController.text.length));
     
+    handleProgress(Future<dynamic> function) async{
+        showDialog(context: context, 
+          builder: (context){
+          return Center(child: CircularProgressIndicator(
+            backgroundColor: Colors.grey,
+            valueColor: AlwaysStoppedAnimation(Colors.green),
+            strokeWidth: 10,
+          ));
+        });
+        var res = await function;
+        Navigator.of(context).pop();
+        return res;
+      }
+
 
     DirectSelectItem<String> getDropDownMenuItem(String value) {
     return DirectSelectItem<String>(
@@ -120,7 +111,7 @@ class _AddRegisterState extends State<AddRegister>{
     List<DropDownValueModel> handlePeopleDropDown(List people) {
 
       return people.map((e){
-        return DropDownValueModel(name: toFirstUpperCase(e), value: e);
+        return DropDownValueModel(name: FormatText.toFirstUpperCase(e), value: e);
       }).toList();
 
     }
@@ -393,26 +384,26 @@ class _AddRegisterState extends State<AddRegister>{
                       type: QuickAlertType.error,
                       text: "No deje los campos obligatorios vacios");
                   }else{
-                    var personId = await handlePerson(name.toLowerCase());
+
+                    var personId = await handleProgress(handlePerson(name.toLowerCase()));
                     if(personId != null){
                       value = value.replaceAll(",", "").replaceAll("\$", "");
-                      Record newRecord = Record(nameId: personId, name: name, type:typeR, value: double.parse(value), date: FormatDate.stringToDate(fecha), observation: obser);
-                        var res = await handleInsert(newRecord);
-                        if(res){
+                      Record newRecord = Record(id: ObjectId(), nameId: personId, name: name, type:typeR, value: double.parse(value), date: FormatDate.stringToDate(fecha), observation: obser);
+                        var res = await RecordsController.addRecord(newRecord);
+                        if(res == true){
                           QuickAlert.show(
                             context: context, 
                             type: QuickAlertType.success,
                             text: "Registro añadido",
                             onCancelBtnTap: (){Navigator.of(context).pop();Navigator.of(context).pop();},
                             onConfirmBtnTap: (){Navigator.of(context).pop();Navigator.of(context).pop();});
-                            
                           return;
                         }
                     }
                     QuickAlert.show(
                       context: context, 
                       type: QuickAlertType.warning,
-                      text: "Ocurrio un problema con la base de datos, intenta mas tarde");
+                      text: "Ocurrio un problema añadiendo los datos, intenta mas tarde");
                   }
                 },
                 child: Container(

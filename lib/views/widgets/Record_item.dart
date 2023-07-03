@@ -69,7 +69,7 @@ class _RecordItemState extends State<RecordItem>{
                   color: AppColor.white.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(5)
                 ),
-                child: Text(record.observation, 
+                child: Text(record.observation??"", 
                 style: TextStyle(color: AppColor.white.withOpacity(0.5))),
               )
             ):Container(height: 10)

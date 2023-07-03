@@ -1,26 +1,50 @@
+import 'package:cuentas_ptt/class/Person.dart';
 import 'package:cuentas_ptt/utils/AppColor.dart';
+import 'package:cuentas_ptt/utils/Format.dart';
 import 'package:cuentas_ptt/views/Page_switcher.dart';
+import 'package:cuentas_ptt/views/widgets/modals/Info_Person.dart';
 import 'package:flutter/material.dart';
 
 class PersonItem extends StatefulWidget{
-  Function getState;
-  PersonItem({required this.getState});
+  Function getState, index;
+  Person person;
+  PersonItem({required this.getState, required this.person, required this.index});
 
   @override
-  _PersonItemState createState() => _PersonItemState(getState: getState);
+  _PersonItemState createState() => _PersonItemState(getState: getState, index: index, person: person);
 }
 
-class _PersonItemState extends State<PersonItem>{
+class _PersonItemState extends State<PersonItem> with TickerProviderStateMixin{
 
-  Function getState;
-  _PersonItemState({required this.getState});
+    late AnimationController controller;
+
+  @override
+  void initState() {
+    transitionAnimationController: controller = BottomSheet.createAnimationController(this);
+    controller.duration = Duration(seconds: 1);
+  }
+
+  Function getState, index;
+  Person person;
+  _PersonItemState({required this.getState, required this.person, required this.index});
+
+  handleModal(Widget modal, BuildContext context) async{
+    return await showModalBottomSheet(
+      transitionAnimationController: controller,
+      backgroundColor: Colors.transparent,
+      context: context, 
+      isScrollControlled: true,
+      builder: (builder) => modal);
+  }
+
+
 
       @override
   Widget build(BuildContext context) {
     bool rtype = getState();
     return InkWell(
       splashColor: AppColor.light,
-      onTap: () => {},
+      onTap: () => handleModal(InfoPerson(), context),
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white.withOpacity(0.9),
@@ -31,7 +55,7 @@ class _PersonItemState extends State<PersonItem>{
           children: [
              Container(
                     padding: EdgeInsets.only(top: 10, right: 10, left: 10),
-                    child: Text("Niche",
+                    child: Text(FormatText.toFirstUpperCase(person.user),
                     style: TextStyle(fontSize: 22,
                     color: AppColor.black)),
                   ),
@@ -42,12 +66,12 @@ class _PersonItemState extends State<PersonItem>{
                 decoration: BoxDecoration(
                   color: AppColor.primary.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(5)
-                ),
+                ), 
                 child: Row(
                   children: [
                     Text("Numero de " + (!rtype? "ingresos": "egresos") + " registrados:", 
                     style: TextStyle(color: AppColor.dark.withOpacity(0.7))),
-                    Text("1", 
+                    Text("${index()}", 
                     style: TextStyle(color: AppColor.dark.withOpacity(0.8))),
                   ],
                 ),

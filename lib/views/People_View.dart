@@ -1,8 +1,12 @@
+import 'package:cuentas_ptt/class/Person.dart';
+import 'package:cuentas_ptt/class/Record.dart';
 import 'package:cuentas_ptt/utils/AppColor.dart';
+import 'package:cuentas_ptt/utils/PeopleController.dart';
+import 'package:cuentas_ptt/utils/RecordsController.dart';
 import 'package:cuentas_ptt/views/widgets/Person_item.dart';
 import 'package:cuentas_ptt/views/widgets/modals/Add_Person.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 
 class PeopleView extends StatefulWidget{
   Function getState;
@@ -15,23 +19,71 @@ class PeopleView extends StatefulWidget{
 class _PeopleState extends State<PeopleView>{
   Function getState;
   _PeopleState({required this.getState});
+  List people = List.empty(growable: true);
+
 
     @override
   Widget build(BuildContext context) {
 
     bool rtype = getState();
-
-
     handleModal(Widget modal) async{
       return await showDialog(
         context: context,
         builder: (builder) => modal);
     } 
+    handlePeople() async{
+      List<Person> peopleS = (await PeopleController.getPeople(limit: 50))??[];
+      List aux = List.empty(growable: true);
+      List<Record> records = await RecordsController.getRecords(rtype)??[];
+      if(peopleS.isNotEmpty){
+        for(Person person in peopleS){
+          List count = records.where((e) => e.nameId == person.id).toList();
+          aux.add({"person": person,"index": count.length});
+        }
+      }
+      return aux;
+    }
+
+
+    handleProgress() async{
+      try {
+        showDialog(context: context, 
+              builder: (context){
+              return Center(child: CircularProgressIndicator(
+                backgroundColor: Colors.grey,
+                valueColor: AlwaysStoppedAnimation(AppColor.primary),
+                strokeWidth: 10,
+              ));
+            });
+
+        
+        people = await handlePeople();
+    
+        Navigator.of(context).pop();
+
+        return people;
+
+      } catch (e) {
+        
+      }
+    }
+
+    
+
+
     return Scaffold(
       backgroundColor: AppColor.black,
-      body: ListView(
+      body: RefreshIndicator(
+        color: AppColor.primary,
+        onRefresh: ()async{
+          people = await handlePeople()??[];
+          setState(() {
+          });
+
+        },
+        child: ListView(
         shrinkWrap: true,
-        physics: BouncingScrollPhysics(),
+        physics: AlwaysScrollableScrollPhysics(),
         children: [
           Container(
             child: Row(children: [
@@ -76,23 +128,21 @@ class _PeopleState extends State<PeopleView>{
           ),
 
           SizedBox(height: 20),
-          ListView.separated(
+          people.isNotEmpty? ListView.separated(
             shrinkWrap: true,
             physics: BouncingScrollPhysics(),
             itemBuilder: (context, i){
               return Container(
                       padding: EdgeInsets.symmetric(horizontal:20, vertical: 5),
-                      child: PersonItem(getState: getState)
+                      child: PersonItem(getState: getState, index: ()=> people[i]["index"], person: people[i]["person"])
                     );  
             }, 
             separatorBuilder: (context, i){
               return SizedBox();
             }, 
-            itemCount: 10),
-            
+            itemCount: people.length): Center(heightFactor: 10 ,child: Text("No hay personas aun con " + (!rtype? "ingresos": "egresos"), style: TextStyle(color: AppColor.white.withOpacity(0.7), fontWeight: FontWeight.bold, fontSize: 17) ,)),
         ],
-      ),
-      
+      ))
     );
   }
 

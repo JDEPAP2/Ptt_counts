@@ -19,12 +19,11 @@ class _PageSwitcherState extends State<PageSwitcher> {
 
   _PageSwitcherState();
 
-  int _selectedIndex = 0;
+  PageController _pageController = PageController(initialPage: 2);
+    int _selectedIndex = 0;
 
   _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+    _pageController.animateToPage(index, duration: Duration(milliseconds: 500), curve: Curves.ease);
   }
 
   bool rtype = false;
@@ -33,6 +32,7 @@ class _PageSwitcherState extends State<PageSwitcher> {
   void initState() {
     super.initState();
     AppColor().setColors(rtype);
+    _selectedIndex = _pageController.initialPage;
   }
 
   @override
@@ -67,28 +67,19 @@ class _PageSwitcherState extends State<PageSwitcher> {
       ),
       
       extendBody: true,
-      body: Stack(
+      body: PageView(
+        onPageChanged: (newIndex){
+          setState(() {
+            _selectedIndex = newIndex;
+          });
+        },
+        controller: _pageController,
         children: [
-          [HomeView(getState: getState), FindView(getState: getState), PeopleView(getState: getState), ExportView(getState: getState)][_selectedIndex],
-          BottomGradientWidget(),
+          HomeView(getState: getState), FindView(getState: getState), PeopleView(getState: getState), ExportView(getState: getState),
         ],
       ),
       bottomNavigationBar: CustomBottomNavigationBar(
           onItemTapped: _onItemTapped, selectedIndex: _selectedIndex),
-    );
-  }
-}
-
-class BottomGradientWidget extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Positioned(
-      bottom: 0,
-      child: Container(
-        width: MediaQuery.of(context).size.width,
-        height: 100,
-        decoration: BoxDecoration(
-          gradient: AppColor.navGradient))
     );
   }
 }

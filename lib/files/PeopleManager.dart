@@ -8,7 +8,7 @@ class PeopleManager{
     try {
       List<List<String>> data = await DataManager.loadData('people');
       data.forEach((element) { 
-      res.add(Person(id: ObjectId(), user: element[1]));
+      res.add(Person(id: ObjectId.fromHexString(element[0]), user: element[1]));
     });
     } catch (e) {}
     return res;
@@ -18,7 +18,8 @@ class PeopleManager{
     try {
       List<Person> people = await readPeople();
       people.add(person);
-      DataManager.writeData(people);
+      DataManager.writeData('people', people);
+      print("-----------paso 2 -------------");
       return true;
     } catch (e) {
       return false;
@@ -27,7 +28,7 @@ class PeopleManager{
 
     static Future<bool> writePeople(List<Person> people) async {
     try {
-      DataManager.writeData(people);
+      DataManager.writeData('people', people);
       return true;
     } catch (e) {
       return false;

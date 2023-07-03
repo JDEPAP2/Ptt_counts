@@ -106,7 +106,7 @@ class _AddPersonState extends State<AddPerson>{
                     ),
                     InkWell(
                       onTap: () async {
-                        PeopleController.addPerson(Person(id: ObjectId(), user: "A"));
+                        // PeopleController.addPerson(Person(id: ObjectId(), user: "A"));
                       },
                       child: Container(
                         margin: EdgeInsets.symmetric(horizontal: 20),

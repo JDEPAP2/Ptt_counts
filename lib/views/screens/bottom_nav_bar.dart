@@ -26,6 +26,7 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
         child: SizedBox(
           height: 70,
           child: BottomNavigationBar(
+            type: BottomNavigationBarType.fixed,
             currentIndex: widget.selectedIndex,
             onTap: (i) => widget.onItemTapped(i),
             showSelectedLabels: false,
@@ -39,7 +40,7 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
                       label: '')
                   : BottomNavigationBarItem(
                       icon: Icon(Icons.home_outlined,
-                          color: Colors.grey[600], size: 30),
+                          color: AppColor.black.withAlpha(100), size: 30),
                       label: ''),
               (widget.selectedIndex == 1)
                   ? BottomNavigationBarItem(
@@ -48,7 +49,7 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
                       label: '')
                   : BottomNavigationBarItem(
                       icon: Icon(Icons.find_in_page_outlined,
-                          color: Colors.grey[600], size: 30),
+                          color: AppColor.black.withAlpha(100), size: 30),
                       label: ''),
               (widget.selectedIndex == 2)
                   ? BottomNavigationBarItem(
@@ -57,7 +58,7 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
                       label: '')
                   : BottomNavigationBarItem(
                       icon: Icon(Icons.supervised_user_circle_outlined,
-                          color: Colors.grey[600], size: 30),
+                          color: AppColor.black.withAlpha(100), size: 30),
                       label: ''),
               (widget.selectedIndex == 3)
                   ? BottomNavigationBarItem(
@@ -66,7 +67,7 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
                       label: '')
                   : BottomNavigationBarItem(
                       icon: Icon(Icons.upload_file_outlined,
-                          color: Colors.grey[600], size: 30),
+                          color: AppColor.black.withAlpha(100), size: 30),
                       label: ''),
             ],
           ),

@@ -6,9 +6,9 @@ import 'package:objectid/objectid.dart';
 
 class PeopleController{
 
-  static bool existPerson(String name){
+  static Future<bool> existPerson(String name) async {
     List<Person> people = List.empty(growable: true);
-    PeopleManager.readPeople().then((value) => people = value);
+    people = await PeopleManager.readPeople();
     if (people.isNotEmpty) {
       List<Person> person =  people.where((e) => e.user == name).toList();
       if (person.isNotEmpty){
@@ -19,43 +19,29 @@ class PeopleController{
   }
 
 
-  static addPerson(Person person){
-    if (existPerson(person.user)) {
-      return null;
-    }
-    PeopleManager.writePerson(person).then((value){
-      return value;
-    });
+  static Future<bool?> addPerson(String name) async{
+    Person person = Person(id: ObjectId(), user: name);
+    return await PeopleManager.writePerson(person);
   }
 
-  static removePerson(Person person){
-    if (!existPerson(person.user)) {
-      return null;
-    }
+  static Future<bool?> removePerson(Person person) async{
     List<Person> people = List.empty(growable: true);
-    PeopleManager.readPeople().then((value) => people = value);
+    people = await PeopleManager.readPeople();
     List<Person> alterPeople =  people.where((e) => e.id != person.id).toList();
-    PeopleManager.writePeople(alterPeople).then((value){
-      return value;
-    });
+    return await PeopleManager.writePeople(alterPeople);
   }
 
-  static alterPerson(Person person){
-    if (!existPerson(person.user)) {
-      return null;
-    }
+  static Future<bool?> alterPerson(Person person) async{
     List<Person> people = List.empty(growable: true);
-    PeopleManager.readPeople().then((value) => people = value);
+    people = await PeopleManager.readPeople();
     List<Person> alterPeople =  people.where((e) => e.id != person.id).toList();
     alterPeople.add(person);
-    PeopleManager.writePeople(alterPeople).then((value){
-      return value;
-    });
+    return await PeopleManager.writePeople(alterPeople);
   }
 
-  static Person? findPersonById(ObjectId id){
+  static Future<Person?> findPersonById(ObjectId id) async{
     List<Person> people = List.empty(growable: true);
-    PeopleManager.readPeople().then((value) => people = value);
+    people = await PeopleManager.readPeople();
     if (people.isNotEmpty) {
       List<Person> person =  people.where((e) => e.id == id).toList();
       if (person.isNotEmpty){
@@ -65,14 +51,27 @@ class PeopleController{
     return null;
   }
 
-  static Person? findPersonByName(String name){
+  static Future<Person?> findPersonByName(String name) async{
     List<Person> people = List.empty(growable: true);
-    PeopleManager.readPeople().then((value) => people = value);
+    people = await PeopleManager.readPeople();
+    print(people);
     if (people.isNotEmpty) {
       List<Person> person =  people.where((e) => e.user == name).toList();
       if (person.isNotEmpty){
         return person[0];
       }
+    }
+    return null;
+  }
+
+  static Future<List<Person>?> getPeople({limit = 100}) async{
+    List<Person> people = List.empty(growable: true);
+    people = await PeopleManager.readPeople();
+    if(people.isNotEmpty){
+      if(people.length < limit){
+        return people;
+      }
+      return people.sublist(0, limit);
     }
     return null;
   }

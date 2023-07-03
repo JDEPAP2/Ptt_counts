@@ -95,9 +95,9 @@ class _ExportState extends State<ExportView>{
                     ),
                   ),
                 )),
-            Container(
-              child: FilterItem(getState: getState, list: listRecords, item: setItem)
-            ),
+            // Container(
+            //   child: FilterItem(getState: getState, list: listRecords, item: setItem)
+            // ),
             Container(
             padding: EdgeInsets.symmetric(horizontal: 18, vertical: 5),
             child: Text("Seleccione el tipo de archivo que desea exportar:", style: TextStyle(fontSize: 18, color: Colors.white))),

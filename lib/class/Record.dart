@@ -1,19 +1,22 @@
-import 'package:mongo_dart/mongo_dart.dart';
-
+import 'package:objectid/objectid.dart';
 class Record{
-  Uuid? id;
-  Uuid nameId;
+  ObjectId id;
+  ObjectId nameId;
   String name;
   bool? type;
   double value;
   DateTime date;
-  String observation;
+  String? observation;
 
-  Record({this.id,
+  Record({required this.id,
           required this.nameId,
           required this.name,
           required this.type,
           required this.value,
           required this.date,
-          this.observation = ""});
+          this.observation});
+  
+  List toList(){
+    return [this.id, this.nameId, this.name, this.type, this.value, this.date, this.observation];
+  }
 }
