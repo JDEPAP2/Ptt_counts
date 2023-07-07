@@ -44,7 +44,7 @@ class _PersonItemState extends State<PersonItem> with TickerProviderStateMixin{
     bool rtype = getState();
     return InkWell(
       splashColor: AppColor.light,
-      onTap: () => handleModal(InfoPerson(), context),
+      onTap: () => handleModal(InfoPerson(getState: getState, person: person), context),
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white.withOpacity(0.9),
@@ -69,7 +69,7 @@ class _PersonItemState extends State<PersonItem> with TickerProviderStateMixin{
                 ), 
                 child: Row(
                   children: [
-                    Text("Numero de " + (!rtype? "ingresos": "egresos") + " registrados:", 
+                    Text("Numero de " + (!rtype? "entradas": "salidas") + " registrados:", 
                     style: TextStyle(color: AppColor.dark.withOpacity(0.7))),
                     Text("${index()}", 
                     style: TextStyle(color: AppColor.dark.withOpacity(0.8))),

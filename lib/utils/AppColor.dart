@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class AppColor{
-  //Si es ingreso es verdadero, si es egreso sera falso
+  //Si es entrada es verdadero, si es salida sera falso
   static Color primary = Colors.black;
   static Color secondary = Colors.black;
   static Color light = Colors.black;
@@ -40,6 +40,7 @@ class AppColor{
 
   }
 
-
-
+  getPrimary(bool state){
+    return state? const Color.fromARGB(255, 206, 29, 16): const Color.fromARGB(255, 0, 70, 199);
+  }
 }

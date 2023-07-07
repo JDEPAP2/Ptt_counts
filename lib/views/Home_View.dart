@@ -92,7 +92,7 @@ class _StateHome extends State<HomeView> with TickerProviderStateMixin{
                             SizedBox(
                               height: 5,
                             ),
-                            Text("Agrega un registro de ingreso o egreso",
+                            Text("Agrega un registro de entrada o salida",
                               style: TextStyle(
                                 color: Colors.white60,
                                 fontSize: 12
@@ -136,7 +136,7 @@ class _StateHome extends State<HomeView> with TickerProviderStateMixin{
                             SizedBox(
                               height: 5,
                             ),
-                            Text("Calcula el valor de un registro de ingreso o egreso",
+                            Text("Calcula el valor de un registro de entrada o salida",
                               style: TextStyle(
                                 color: Colors.white60,
                                 fontSize: 12
@@ -180,7 +180,7 @@ class _StateHome extends State<HomeView> with TickerProviderStateMixin{
                             SizedBox(
                               height: 5,
                             ),
-                            Text("Importar un registro de ingreso o egreso mediante un csv",
+                            Text("Importar un registro de entrada o salida mediante un csv",
                               softWrap: true,
                               style: TextStyle(
                                 color: Colors.white60,

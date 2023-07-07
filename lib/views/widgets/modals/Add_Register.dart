@@ -56,7 +56,7 @@ class _AddRegisterState extends State<AddRegister>{
       @override
   Widget build(BuildContext context) {
     SingleValueDropDownController nameController = SingleValueDropDownController(data: DropDownValueModel(name: name, value: name.toLowerCase()));
-    SingleValueDropDownController typeController = SingleValueDropDownController(data: typeR!=null? DropDownValueModel(name: typeR==true? "Ingreso":"Egreso", value: typeR):null );
+    SingleValueDropDownController typeController = SingleValueDropDownController(data: typeR!=null? DropDownValueModel(name: typeR==true? "entrada":"salida", value: typeR):null );
     TextEditingController nameFieldController = TextEditingController(text: name);
     nameFieldController.selection = TextSelection.fromPosition(TextPosition(offset: nameFieldController.text.length));
     TextEditingController dateController = TextEditingController(text: fecha);
@@ -270,7 +270,7 @@ class _AddRegisterState extends State<AddRegister>{
             margin: EdgeInsets.only(bottom: 10, right: 20, left: 20),
             padding: EdgeInsets.symmetric(horizontal: 10),
             child: DropDownTextField(
-              dropDownList: [DropDownValueModel(name: "Ingreso", value: true), DropDownValueModel(name: "Egreso", value: false)], 
+              dropDownList: [DropDownValueModel(name: "entrada", value: true), DropDownValueModel(name: "salida", value: false)], 
               dropdownRadius: 10,
               onChanged: (v){
                 if( v is String){

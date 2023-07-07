@@ -140,7 +140,7 @@ class _PeopleState extends State<PeopleView>{
             separatorBuilder: (context, i){
               return SizedBox();
             }, 
-            itemCount: people.length): Center(heightFactor: 10 ,child: Text("No hay personas aun con " + (!rtype? "ingresos": "egresos"), style: TextStyle(color: AppColor.white.withOpacity(0.7), fontWeight: FontWeight.bold, fontSize: 17) ,)),
+            itemCount: people.length): Center(heightFactor: 10 ,child: Text("No hay personas aun con " + (!rtype? "entradas": "salidas"), style: TextStyle(color: AppColor.white.withOpacity(0.7), fontWeight: FontWeight.bold, fontSize: 17) ,)),
         ],
       ))
     );

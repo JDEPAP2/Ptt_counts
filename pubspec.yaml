@@ -50,6 +50,7 @@ dependencies:
   uuid: ^3.0.7
   objectid: ^2.1.0
   function_tree: ^0.8.13
+  toggle_switch: ^2.1.0
 
 dev_dependencies:
   flutter_test:

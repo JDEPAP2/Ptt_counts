@@ -49,7 +49,7 @@ class _PageSwitcherState extends State<PageSwitcher> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text(rtype? "Egresos":"Ingresos", style:TextStyle(fontWeight: FontWeight.bold, fontSize: 25)),
+        title: Text(rtype? "Salidas":"Entradas", style:TextStyle(fontWeight: FontWeight.bold, fontSize: 25)),
         backgroundColor: AppColor.primary,
         leadingWidth: 100,
         leading: Container(
