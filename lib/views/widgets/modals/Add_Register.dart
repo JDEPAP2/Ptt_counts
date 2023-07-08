@@ -1,6 +1,6 @@
 import 'dart:math';
 import 'package:cuentas_ptt/class/Record.dart';
-import 'package:cuentas_ptt/utils/Database.dart';
+import 'package:cuentas_ptt/views/widgets/modals/Find_Person.dart';
 import 'package:cuentas_ptt/utils/Format.dart';
 import 'package:cuentas_ptt/utils/PeopleController.dart';
 import 'package:cuentas_ptt/utils/RecordsController.dart';
@@ -19,7 +19,7 @@ class AddRegister extends StatefulWidget{
   _AddRegisterState createState() => _AddRegisterState();
 }
 
-class _AddRegisterState extends State<AddRegister>{
+class _AddRegisterState extends State<AddRegister> with TickerProviderStateMixin{
 
   List People = List.empty(growable: true);
 
@@ -29,9 +29,13 @@ class _AddRegisterState extends State<AddRegister>{
   late String name;
   late bool? typeR;
 
+    late AnimationController controller;
+
   @override
   void initState() {
     // db = Database();
+    transitionAnimationController: controller = BottomSheet.createAnimationController(this);
+    controller.duration = Duration(seconds: 1);
     fecha = FormatDate.dateToString(DateTime.now());
     value = "";
     obser = "";
@@ -55,10 +59,8 @@ class _AddRegisterState extends State<AddRegister>{
 
       @override
   Widget build(BuildContext context) {
-    SingleValueDropDownController nameController = SingleValueDropDownController(data: DropDownValueModel(name: name, value: name.toLowerCase()));
     SingleValueDropDownController typeController = SingleValueDropDownController(data: typeR!=null? DropDownValueModel(name: typeR==true? "entrada":"salida", value: typeR):null );
     TextEditingController nameFieldController = TextEditingController(text: name);
-    nameFieldController.selection = TextSelection.fromPosition(TextPosition(offset: nameFieldController.text.length));
     TextEditingController dateController = TextEditingController(text: fecha);
     dateController.selection = TextSelection.fromPosition(TextPosition(offset: dateController.text.length));
     TextEditingController valueController = TextEditingController(text: value);
@@ -116,6 +118,14 @@ class _AddRegisterState extends State<AddRegister>{
 
     }
 
+    handleModal(Widget modal, BuildContext context) async{
+        return await showModalBottomSheet(
+          transitionAnimationController: controller,
+          backgroundColor: Colors.transparent,
+          context: context, 
+          isScrollControlled: true,
+          builder: (builder) => modal);
+      }
 
     return Container(
       padding: EdgeInsets.all(10),
@@ -270,7 +280,7 @@ class _AddRegisterState extends State<AddRegister>{
             margin: EdgeInsets.only(bottom: 10, right: 20, left: 20),
             padding: EdgeInsets.symmetric(horizontal: 10),
             child: DropDownTextField(
-              dropDownList: [DropDownValueModel(name: "entrada", value: true), DropDownValueModel(name: "salida", value: false)], 
+              dropDownList: [DropDownValueModel(name: "Entrada", value: true), DropDownValueModel(name: "Salida", value: false)], 
               dropdownRadius: 10,
               onChanged: (v){
                 if( v is String){
@@ -298,31 +308,25 @@ class _AddRegisterState extends State<AddRegister>{
             ),
             margin: EdgeInsets.only(bottom: 10, right: 20, left: 20),
             padding: EdgeInsets.symmetric(horizontal: 10),
-            child: DropDownTextField(
-              dropDownList: handlePeopleDropDown(People), 
-              searchAutofocus: true,
-              readOnly: false,
-              dropdownRadius: 10,
-              controller: nameController,
-              textFieldController: nameFieldController,
-              onChangedTextField: (value){
-                name = value;
-              },
-              onChanged: (v) {
-                if( v is String){
-                  name = "";
-                }else{
-                  name = v.name;
-                }
-              },
-              dropdownColor: Color.fromARGB(255, 233, 233, 233),
-              textFieldDecoration: InputDecoration(
-                    border: InputBorder.none,
-                    enabledBorder: InputBorder.none,
-                    hintText: "Nombre",
-                    hintStyle: TextStyle(fontSize: 15, color: Colors.black38),
-                    labelStyle: TextStyle(fontSize: 15)),
-              )),
+            child: TextField(
+                  readOnly: true,
+                  controller: nameFieldController,
+                  onTap: () async{
+                    dynamic modalName = await handleModal(FindPerson(controller: nameFieldController), context);
+                    if(modalName is String){
+                      name = modalName;
+                      nameFieldController.text = modalName;
+                    }
+                    setState(() {
+                    });
+                  },
+                  decoration: InputDecoration( 
+                        border: InputBorder.none,
+                        enabledBorder: InputBorder.none,
+                        hintText: "Nombre",
+                        hintStyle: TextStyle(fontSize: 15, color: Colors.black38),
+                        labelStyle: TextStyle(fontSize: 15)),
+                  )),
           Container(
             padding: EdgeInsets.symmetric(horizontal: 18, vertical: 10),
             child: Text("Observación", style: TextStyle(fontSize: 18))),
