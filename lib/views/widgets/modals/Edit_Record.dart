@@ -14,34 +14,41 @@ import 'package:objectid/objectid.dart';
 import 'package:quickalert/quickalert.dart';
 
 
-class AddRegister extends StatefulWidget{
+class EditRegister extends StatefulWidget{
+  
+  Record record;
   @override
-  _AddRegisterState createState() => _AddRegisterState();
+  EditRegister({required this.record});
+
+  _EditRegisterState createState() => _EditRegisterState(record: record);
 }
 
-class _AddRegisterState extends State<AddRegister> with TickerProviderStateMixin{
+class _EditRegisterState extends State<EditRegister> with TickerProviderStateMixin{
 
   List People = List.empty(growable: true);
 
-  late String fecha;
-  late String value;
-  late String obser;
-  late String name;
+  Record record;
+  late ObjectId id;
+  late String fecha,value,name;
+  late String? obser;
   late bool? typeR;
 
-    late AnimationController controller;
+  _EditRegisterState({required this.record});
+  late AnimationController controller;
 
   @override
   void initState() {
-    // db = Database();
-    transitionAnimationController: controller = BottomSheet.createAnimationController(this);
+    id = record.id;
+    fecha = FormatDate.dateToString(record.date);
+    value = FormatValue.doubleToString(record.value);
+    name = FormatText.toFirstUpperCase(record.name);
+    obser = record.observation;
+    bool? val = record.type;
+    if(val != null){
+      typeR = !val;
+    }
+    controller = BottomSheet.createAnimationController(this);
     controller.duration = Duration(seconds: 1);
-    fecha = FormatDate.dateToString(DateTime.now());
-    value = "";
-    obser = "";
-    name = "";
-    typeR = null;
-    // handlePeople();
     super.initState();
   }
 
@@ -59,7 +66,7 @@ class _AddRegisterState extends State<AddRegister> with TickerProviderStateMixin
 
       @override
   Widget build(BuildContext context) {
-    SingleValueDropDownController typeController = SingleValueDropDownController(data: typeR!=null? DropDownValueModel(name: typeR==true? "entrada":"salida", value: typeR):null );
+    SingleValueDropDownController typeController = SingleValueDropDownController(data: typeR!=null? DropDownValueModel(name: typeR==true? "Entrada":"Salida", value: typeR):null );
     TextEditingController nameFieldController = TextEditingController(text: name);
     TextEditingController dateController = TextEditingController(text: fecha);
     dateController.selection = TextSelection.fromPosition(TextPosition(offset: dateController.text.length));
@@ -288,6 +295,8 @@ class _AddRegisterState extends State<AddRegister> with TickerProviderStateMixin
                 }else{
                   typeR = v.value;
                 }
+                setState(() {
+                });
               },
               controller: typeController,
               dropdownColor: Color.fromARGB(255, 233, 233, 233),
@@ -314,8 +323,8 @@ class _AddRegisterState extends State<AddRegister> with TickerProviderStateMixin
                   onTap: () async{
                     dynamic modalName = await handleModal(FindPerson(controller: nameFieldController), context);
                     if(modalName is String){
-                      name = modalName;
-                      nameFieldController.text = modalName;
+                      name = modalName.toLowerCase();
+                      nameFieldController.text = modalName.toLowerCase();
                     }
                     setState(() {
                     });
@@ -343,6 +352,9 @@ class _AddRegisterState extends State<AddRegister> with TickerProviderStateMixin
                   controller: obserController,
                   onChanged: (v) {
                     obser = v;
+                    setState(() {
+                      
+                    });
                   },
                   maxLength: 120,
                   maxLines: 3,
@@ -382,39 +394,40 @@ class _AddRegisterState extends State<AddRegister> with TickerProviderStateMixin
               ),
               InkWell(
                 onTap: () async{
-                  if(typeR==null || fecha == "" || value == "" || name == ""){
+                  if(typeR==null || fecha == "" || value == "" || name == "" || name.replaceAll(" ", "").isEmpty){
                     QuickAlert.show(
                       context: context, 
                       type: QuickAlertType.error,
                       text: "No deje los campos obligatorios vacios");
                   }else{
-
+                    print(obser);
+                    print(obserController.value);
                     var personId = await handleProgress(handlePerson(name.toLowerCase()));
                     if(personId != null){
                       value = value.replaceAll(",", "").replaceAll("\$", "");
-                      Record newRecord = Record(id: ObjectId(), nameId: personId, name: name, type:typeR, value: double.parse(value), date: FormatDate.stringToDate(fecha), observation: obser);
-                        var res = await RecordsController.addRecord(newRecord);
+                      Record newRecord = Record(id: id, nameId: personId, name: name.toLowerCase(), type:!(typeR??false), value: double.parse(value), date: FormatDate.stringToDate(fecha), observation: obser);
+                        var res = await RecordsController.alterRecord(newRecord);
                         if(res == true){
-                          QuickAlert.show(
+                          await QuickAlert.show(
                             context: context, 
                             type: QuickAlertType.success,
-                            text: "Registro añadido",
-                            onCancelBtnTap: (){Navigator.of(context).pop();Navigator.of(context).pop();},
-                            onConfirmBtnTap: (){Navigator.of(context).pop();Navigator.of(context).pop();});
-                          return;
+                            text: "Registro corregido exitosamente");
+                          Navigator.of(context).pop(newRecord);
+                            return;
                         }
+
                     }
                     QuickAlert.show(
                       context: context, 
                       type: QuickAlertType.warning,
-                      text: "Ocurrio un problema añadiendo los datos, intenta mas tarde");
+                      text: "Ocurrio un problema corrigiendo los datos, intenta mas tarde");
                   }
                 },
                 child: Container(
                   margin: EdgeInsets.symmetric(horizontal: 20),
                   padding: EdgeInsets.all(10),
                   alignment: Alignment.center,
-                  child: Text("Añadir", style: TextStyle(color: Colors.black87,fontSize: 20, fontWeight: FontWeight.bold)),
+                  child: Text("Guardar", style: TextStyle(color: Colors.black87,fontSize: 20, fontWeight: FontWeight.bold)),
                 ),
               )
             ]),

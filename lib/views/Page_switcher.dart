@@ -8,6 +8,7 @@ import 'package:cuentas_ptt/utils/AppColor.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 
 
+
 class PageSwitcher extends StatefulWidget {
   const PageSwitcher();
   
@@ -15,11 +16,11 @@ class PageSwitcher extends StatefulWidget {
   _PageSwitcherState createState() => _PageSwitcherState();
 }
 
-class _PageSwitcherState extends State<PageSwitcher> {
+class _PageSwitcherState extends State<PageSwitcher>{
 
   _PageSwitcherState();
 
-  PageController _pageController = PageController(initialPage: 2);
+  PageController _pageController = PageController(initialPage: 0);
     int _selectedIndex = 0;
 
   _onItemTapped(int index) {
@@ -27,6 +28,7 @@ class _PageSwitcherState extends State<PageSwitcher> {
   }
 
   bool rtype = false;
+  Function onAction = ()=>{};
 
   @override
   void initState() {
@@ -41,11 +43,17 @@ class _PageSwitcherState extends State<PageSwitcher> {
     AppColor().setColors(rtype);
   }
 
+
   @override
   Widget build(BuildContext context) {
-    getState(){
+
+    getState({bool upd=false}){
+      if(upd){
+        try {setState(() { });} catch (e) {};
+      }
       return rtype;
     }
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -67,7 +75,9 @@ class _PageSwitcherState extends State<PageSwitcher> {
       ),
       
       extendBody: true,
-      body: PageView(
+      body: ScrollConfiguration(
+        behavior: const ScrollBehavior().copyWith(overscroll: false),
+        child: PageView(
         onPageChanged: (newIndex){
           setState(() {
             _selectedIndex = newIndex;
@@ -75,9 +85,9 @@ class _PageSwitcherState extends State<PageSwitcher> {
         },
         controller: _pageController,
         children: [
-          HomeView(getState: getState), FindView(getState: getState), PeopleView(getState: getState), ExportView(getState: getState),
+          HomeView(getState: getState), FindView(getState: getState, getFunction: onAction), PeopleView(getState: getState), ExportView(getState: getState),
         ],
-      ),
+      )),
       bottomNavigationBar: CustomBottomNavigationBar(
           onItemTapped: _onItemTapped, selectedIndex: _selectedIndex),
     );

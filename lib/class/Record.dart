@@ -17,6 +17,6 @@ class Record{
           this.observation});
   
   List toList(){
-    return [this.id, this.nameId, this.name, this.type, this.value, this.date, this.observation];
+    return [id, nameId, name, type, value, date, observation];
   }
 }

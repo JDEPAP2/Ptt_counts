@@ -59,4 +59,13 @@ class RecordsController{
     }
     return null;
   }
+
+  static Future<List<Record>?> getAllRecords() async{
+    List<Record> records = List.empty(growable: true);
+    records = await RecordManager.readRecords();
+    if (records.isNotEmpty) {
+      return records;
+    }
+    return null;
+  }
 }

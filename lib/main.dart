@@ -1,5 +1,6 @@
 import 'package:cuentas_ptt/utils/Database.dart';
 import 'package:cuentas_ptt/views/Home_View.dart';
+import 'package:cuentas_ptt/views/Lock_View.dart';
 import 'package:cuentas_ptt/views/Page_switcher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -32,7 +33,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: PageSwitcher(),
+      home: LockView(),
     );
   }
 }

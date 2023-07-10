@@ -51,6 +51,15 @@ dependencies:
   objectid: ^2.1.0
   function_tree: ^0.8.13
   toggle_switch: ^2.1.0
+  rxdart: ^0.27.7
+  widgets_to_image: ^0.0.2
+  share_plus: ^7.0.2
+  file_picker: ^5.3.1
+  open_file: ^3.3.2
+  tip_dialog: ^4.0.0
+  modal_bottom_sheet: ^3.0.0-pre
+  local_auth: ^2.1.6
+  numberpicker: ^2.1.2
 
 dev_dependencies:
   flutter_test:

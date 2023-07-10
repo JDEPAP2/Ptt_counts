@@ -14,12 +14,12 @@ class AppColor{
 
   setColors(bool state){
 
-    primary = state? const Color.fromARGB(255, 206, 29, 16): const Color.fromARGB(255, 0, 70, 199);
-    secondary = state? const Color.fromARGB(255, 220, 51, 9): const Color.fromARGB(255, 17, 98, 228);
-    light = state? const Color.fromARGB(255, 255, 62, 48): const Color.fromARGB(255, 44, 126, 250);
-    dark = state? const Color.fromARGB(255, 97, 10, 4): Color.fromARGB(255, 13, 48, 100);
-    black = state? Color.fromARGB(255, 19, 1, 0): Color.fromARGB(255, 0, 7, 22);  
-    white = state? Color.fromARGB(255, 255, 230, 229): Color.fromARGB(255, 212, 226, 255);   
+    primary = state? Color.fromARGB(255, 218, 0, 44): const Color.fromARGB(255, 0, 70, 199);
+    secondary = state? Color.fromARGB(255, 209, 30, 66): const Color.fromARGB(255, 17, 98, 228);
+    light = state? const Color.fromRGBO(255, 62, 100, 1): const Color.fromARGB(255, 44, 126, 250);
+    dark = state? Color.fromARGB(255, 78, 6, 21): Color.fromARGB(255, 13, 48, 100);
+    black = state? Color.fromRGBO(20, 0, 4, 1): Color.fromARGB(255, 0, 7, 22);  
+    white = state? Color.fromRGBO(255, 216, 224, 1): Color.fromARGB(255, 212, 226, 255);   
     gradient = LinearGradient(
     colors: [primary,secondary], 
     begin: Alignment.centerLeft,
@@ -41,6 +41,6 @@ class AppColor{
   }
 
   getPrimary(bool state){
-    return state? const Color.fromARGB(255, 206, 29, 16): const Color.fromARGB(255, 0, 70, 199);
+    return state? Color.fromARGB(255, 218, 0, 44): const Color.fromARGB(255, 0, 70, 199);
   }
 }

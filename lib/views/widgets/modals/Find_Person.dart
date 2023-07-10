@@ -34,14 +34,9 @@ class _FindPersonState extends State<FindPerson>{
   }
   
   Future<void> handleList(String value) async{
+    people.clear();
     List<Person> aux = await PeopleController.getPeople()?? [];
     setState(() {
-      aux.add(Person(id: ObjectId(), user: "mario"));
-      aux.add(Person(id: ObjectId(), user: "camila"));
-      aux.add(Person(id: ObjectId(), user: "andres"));
-      aux.add(Person(id: ObjectId(), user: "carlos"));
-      aux.add(Person(id: ObjectId(), user: "sara"));
-      aux.add(Person(id: ObjectId(), user: "adriana"));
       people = aux.where((element) => element.user.contains(value.toLowerCase())).toList();
       
     });

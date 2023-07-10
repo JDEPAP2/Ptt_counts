@@ -20,71 +20,85 @@ class _PeopleState extends State<PeopleView>{
   Function getState;
   _PeopleState({required this.getState});
   List people = List.empty(growable: true);
+  bool rtype = false;
 
+  Future<void> handleAsync() async{
+    await handlePeople();
+
+  }
 
     @override
-  Widget build(BuildContext context) {
+  void initState() {
+    rtype = getState();
+    handleAsync();
+    super.initState();
 
-    bool rtype = getState();
-    handleModal(Widget modal) async{
-      return await showDialog(
-        context: context,
-        builder: (builder) => modal);
-    } 
-    handlePeople() async{
+  }
+
+  Future<void> handlePeople() async{
+      print("handleeeeeeeeeeeeeee");
+      people.clear();
+      setState(() {});
       List<Person> peopleS = (await PeopleController.getPeople(limit: 50))??[];
       List aux = List.empty(growable: true);
-      List<Record> records = await RecordsController.getRecords(rtype)??[];
+      List<Record> records = await RecordsController.getRecords(getState())??[];
       if(peopleS.isNotEmpty){
         for(Person person in peopleS){
           List count = records.where((e) => e.nameId == person.id).toList();
           aux.add({"person": person,"index": count.length});
         }
       }
-      return aux;
-    }
+      people = aux;
+      setState(() {});
+  }
 
 
-    handleProgress() async{
-      try {
-        showDialog(context: context, 
-              builder: (context){
-              return Center(child: CircularProgressIndicator(
-                backgroundColor: Colors.grey,
-                valueColor: AlwaysStoppedAnimation(AppColor.primary),
-                strokeWidth: 10,
-              ));
-            });
+    @override
+  Widget build(BuildContext context) {
+    if(getState()!= rtype){
+      handleAsync();}
+    rtype = getState();
 
-        
-        people = await handlePeople();
+    handleModal(Widget modal) async{
+      return await showDialog(
+        context: context,
+        builder: (builder) => modal);
+    } 
+
+    // handleProgress() async{
+    //   try {
+    //     showDialog(context: context, 
+    //           builder: (context){
+    //           return Center(child: CircularProgressIndicator(
+    //             backgroundColor: Colors.grey,
+    //             valueColor: AlwaysStoppedAnimation(AppColor.primary),
+    //             strokeWidth: 10,
+    //           ));
+    //         });     
+    //     people = await handlePeople();
+    //     Navigator.of(context).pop();
+    //     return people;
+    //   } catch (e) {  
+    //   }
+    // }
+
     
-        Navigator.of(context).pop();
-
-        return people;
-
-      } catch (e) {
-        
-      }
-    }
-
-    
-
-
     return Scaffold(
       backgroundColor: AppColor.black,
       body: RefreshIndicator(
         color: AppColor.primary,
         onRefresh: ()async{
-          people = await handlePeople()??[];
-          setState(() {
-          });
-
+          await handlePeople();
         },
         child: ListView(
         shrinkWrap: true,
         physics: AlwaysScrollableScrollPhysics(),
         children: [
+          Container(
+            padding: EdgeInsets.only(top: 25, bottom: 10),
+            alignment: Alignment.center,
+            child: Text("Buscar Personas", style: TextStyle(color: AppColor.white,  fontSize: 25),),
+          ),
           Container(
             child: Row(children: [
               Container(
@@ -119,7 +133,10 @@ class _PeopleState extends State<PeopleView>{
                 height: 50,
                 child: InkWell(
                   splashColor: AppColor.black,
-                  onTap: () => {handleModal(AddPerson())},
+                  onTap: () async {
+                    await handleModal(AddPerson());
+                    await handlePeople();
+                  },
                   child: Icon(Icons.add_rounded, color: AppColor.dark,size: 35)
                 )
                 ),
@@ -134,7 +151,7 @@ class _PeopleState extends State<PeopleView>{
             itemBuilder: (context, i){
               return Container(
                       padding: EdgeInsets.symmetric(horizontal:20, vertical: 5),
-                      child: PersonItem(getState: getState, index: ()=> people[i]["index"], person: people[i]["person"])
+                      child: PersonItem(getState: getState, index: ()=> people[i]["index"], person: people[i]["person"], update: ()=>handlePeople())
                     );  
             }, 
             separatorBuilder: (context, i){

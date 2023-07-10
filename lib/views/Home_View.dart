@@ -1,13 +1,15 @@
+import 'dart:ffi';
+
 import 'package:cuentas_ptt/utils/Database.dart';
+import 'package:cuentas_ptt/utils/RecordsController.dart';
 import 'package:cuentas_ptt/views/widgets/Record_item.dart';
-import 'package:cuentas_ptt/views/widgets/modals/Add_Register.dart';
+import 'package:cuentas_ptt/views/widgets/modals/Add_Record.dart';
 import 'package:cuentas_ptt/views/widgets/modals/Calculator.dart';
 import 'package:flutter/material.dart';
 import 'package:cuentas_ptt/utils/AppColor.dart';
-import 'package:flutter_switch/flutter_switch.dart';
+import 'package:cuentas_ptt/class/Record.dart';
+import 'package:objectid/objectid.dart';
 
-
-typedef void boolCallback(bool i);
 
 class HomeView extends StatefulWidget{
   Function getState;
@@ -22,36 +24,76 @@ class _StateHome extends State<HomeView> with TickerProviderStateMixin{
   _StateHome({required this.getState});
 
   late AnimationController controller;
+  Record? lastRecord;
+  bool rtype = false;
 
   @override
   void initState() {
-    transitionAnimationController: controller = BottomSheet.createAnimationController(this);
-    controller.duration = Duration(seconds: 1);
+    rtype = getState();
+    handleAsync();
+    controller = BottomSheet.createAnimationController(this);
+    controller.duration = Duration(seconds: 2);
   }
 
-  hanldeInsert() async{
-    var res = await Database().insertPerson("niche");
-    print(res);
+  handleAsync () async {
+    await handleLastRecord();
+  }
+
+  handleLastRecord () async{
+    try {
+      setState(() {lastRecord = null;});
+      List<Record> records = await RecordsController.getRecords(getState())??[];
+      if(records.isNotEmpty){
+          lastRecord = records.last;
+        }else{
+          lastRecord = null;
+      }
+    setState(() {});
+    } catch (e) {}
+
   }
 
   handleModal(Widget modal, BuildContext context) async{
     return await showModalBottomSheet(
+      enableDrag: true,
       transitionAnimationController: controller,
       backgroundColor: Colors.transparent,
       context: context, 
       isScrollControlled: true,
-      builder: (builder) => modal);
+      builder: (context)=> modal);
   }
 
+  handleProgress(Future<dynamic> function) async{
+        showDialog(context: context, 
+          builder: (context){
+          return Center(child: CircularProgressIndicator(
+            backgroundColor: Colors.grey,
+            valueColor: AlwaysStoppedAnimation(AppColor.secondary),
+            strokeWidth: 10,
+          ));
+        });
+        var res = await function;
+        Navigator.of(context).pop();
+        return res;
+  }
     @override
   Widget build(BuildContext context) {
-    bool rtype = getState();
+    if(getState()!= rtype){
+      handleAsync();}
+    rtype = getState();
     return Scaffold(
       backgroundColor: AppColor.black,
-      body: ListView(
+      body: RefreshIndicator(
+        onRefresh: (){handleAsync(); getState(upd:true); return Future(() => null);},
+        child: ListView(
         shrinkWrap: true,
         physics: const BouncingScrollPhysics(),
         children: [
+          Container(
+            padding: EdgeInsets.only(top: 25, bottom: 10),
+            alignment: Alignment.center,
+            child: Text("Añadir Registros", style: TextStyle(color: AppColor.white,  fontSize: 25),),
+          ),
           Container(
             padding: EdgeInsets.all(15),
             height: 120,
@@ -69,7 +111,15 @@ class _StateHome extends State<HomeView> with TickerProviderStateMixin{
                     color: AppColor.white.withOpacity(0.2),
                   ),
                   child: InkWell(
-                    onTap: ()=> handleModal(AddRegister(), context),
+                    onTap: ()async{
+                       await handleModal(AddRecord(), context);
+                       try {
+                          await handleProgress(Future.delayed(Duration(milliseconds: 500)));
+                          handleAsync();
+                        } catch (e) {
+                          
+                        }
+                    },
                     child: Row(
                     children: [
                       Container(
@@ -113,7 +163,12 @@ class _StateHome extends State<HomeView> with TickerProviderStateMixin{
                     color: AppColor.white.withOpacity(0.2),
                   ),
                   child: InkWell(
-                    onTap: ()=> handleModal(Calculator(), context),
+                    onTap: ()async{
+                       await handleModal(Calculator(), context);
+                       setState(() {
+                         handleAsync();
+                       });
+                    },
                     child: Row(
                     children: [
                       Container(
@@ -157,7 +212,7 @@ class _StateHome extends State<HomeView> with TickerProviderStateMixin{
                     color: AppColor.white.withOpacity(0.2),
                   ),
                   child: InkWell(
-                    onTap: ()=> handleModal(AddRegister(), context),
+                    onTap: ()=> handleModal(AddRecord(), context),
                     child: Row(
                     children: [
                       Container(
@@ -195,14 +250,24 @@ class _StateHome extends State<HomeView> with TickerProviderStateMixin{
                 ),
                 ],
             ),
+          ),Container(
+            padding: EdgeInsets.only(top: 30, bottom: 10, left: 25),
+            alignment: Alignment.topLeft,
+            child: Text("Ultimo Registro", style: TextStyle(color: AppColor.white,  fontSize: 25),),
           ),
+          lastRecord!=null?
+          Container(
+            padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+            child: RecordItem(getState: getState, record: lastRecord??Record(id: ObjectId(), nameId: ObjectId(), name: "", type: null, value: 0, date: DateTime.now()), update: () => handleAsync(),),
+          ):
+          Center(heightFactor: 5 ,child: Text("No hay " + (!rtype? "entradas": "salidas") + " aún", style: TextStyle(color: AppColor.white.withOpacity(0.7), fontWeight: FontWeight.bold, fontSize: 17) ,)),
           Container(
             padding: EdgeInsets.all(20),
             child: null,
           )      
         ],
       ),
-    );
+    ));
   }
 
 }

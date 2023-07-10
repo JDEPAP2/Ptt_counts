@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'dart:typed_data';
+import 'package:file_picker/file_picker.dart';
 import 'package:objectid/objectid.dart';
 import 'package:path_provider/path_provider.dart';
 import '../class/record.dart';
@@ -61,6 +63,41 @@ class DataManager{
           print("-------------- pasooo ------------------");
         } catch (e) {
           print("------------------------errrrrorrrr-----------------------------\n" + e.toString());
+    }
+  }
+
+  static Future<bool> writeStreamDataChoose(String name, Uint8List list ) async{
+    try {
+          String? selectedDirectory = await FilePicker.platform.getDirectoryPath();
+          if(selectedDirectory != null){
+            File file = File( selectedDirectory + name);
+            if(!(await file.exists())){
+              await file.writeAsBytes(Uint8List(1));
+            }
+            await file.writeAsBytes(list);
+            return true;
+          }
+
+          return false;
+        } catch (e) {
+          return false;
+
+    }
+
+  }
+
+    static Future<String?> writeStreamData(String name, Uint8List list ) async{
+    try {
+          String path = (await getApplicationDocumentsDirectory()).path;
+          File file = File( path + name);
+          if(!(await file.exists())){
+            await file.writeAsBytes(Uint8List(1));
+          }
+          await file.writeAsBytes(list);
+
+          return path + name;
+        } catch (e) {
+          return null;
     }
 
   }

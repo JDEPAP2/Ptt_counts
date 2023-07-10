@@ -9,7 +9,7 @@ class RecordManager{
     try {
       List<List<String>> data = await DataManager.loadData('records');
       data.forEach((element){
-      res.add(Record(id: ObjectId.fromHexString(element[0]), nameId: ObjectId.fromHexString(element[1]), name: element[2], type: element[3] == "true"? true:false, value: double.parse(element[4]), date: DateTime.parse(element[5])));
+      res.add(Record(id: ObjectId.fromHexString(element[0]), nameId: ObjectId.fromHexString(element[1]), name: element[2], type: element[3] == "true"? true:false, value: double.parse(element[4]), date: DateTime.parse(element[5]), observation: element[6] == "null"?null:element[6]));
     });
     } catch (e) {}
     return res;

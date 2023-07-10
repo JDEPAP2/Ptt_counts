@@ -2,10 +2,12 @@ import 'package:cuentas_ptt/class/Person.dart';
 import 'package:cuentas_ptt/class/Record.dart';
 import 'package:cuentas_ptt/utils/AppColor.dart';
 import 'package:cuentas_ptt/utils/Format.dart';
+import 'package:cuentas_ptt/utils/PeopleController.dart';
 import 'package:cuentas_ptt/utils/RecordsController.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:objectid/objectid.dart';
+import 'package:quickalert/quickalert.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
 
@@ -82,7 +84,9 @@ class _InfoPersonState extends State<InfoPerson>{
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       height: MediaQuery.of(context).viewInsets.bottom == 0? MediaQuery.of(context).size.height * 0.8: double.maxFinite,
-      child: ListView(
+      child: ScrollConfiguration(
+          behavior: const ScrollBehavior().copyWith(overscroll: false),
+          child:ListView(
         physics: AlwaysScrollableScrollPhysics(),
         shrinkWrap: true,
         children: [
@@ -182,7 +186,7 @@ class _InfoPersonState extends State<InfoPerson>{
               margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
               padding: EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: Colors.black12,
+                color: Colors.black.withOpacity(0.05),
                 borderRadius: BorderRadius.circular(8)
                 ),
               child: Row(children: [
@@ -195,21 +199,44 @@ class _InfoPersonState extends State<InfoPerson>{
         itemCount: records.length),
       )),
       Container(
-            height: 200,
+            height: 80,
             padding: EdgeInsets.symmetric(vertical: 20,horizontal: 10),
             margin: EdgeInsets.only(bottom: 15),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Container(height: 2,color: Colors.black26),
+                Container(height: 2,color: Colors.black12),
                 Container(padding: EdgeInsets.all(5),
                   child: Text("${FormatValue.doubleToString(total)}", style: TextStyle(color: AppColor().getPrimary(selectedIndex == 1? true: false), fontSize: 20)))
               ],
             ),
-          )
+          ),
+        Container(
+              margin: EdgeInsets.symmetric(horizontal: 5),
+              decoration: BoxDecoration(color: AppColor().getPrimary(selectedIndex == 1? true: false), borderRadius: BorderRadius.circular(10)),
+              child: IconButton(
+                  onPressed: () async {
+                      // RecordsController.removeRecord(record.id);
+                      var res = await QuickAlert.show(
+                        context: context, 
+                        type: QuickAlertType.confirm,
+                        cancelBtnText: "Cancelar",
+                        confirmBtnColor: Colors.red,
+                        confirmBtnText: "Eliminar",
+                        title: "Eliminar Persona",
+                        text: "¿Esta seguro que desea eliminar esta persona, todos sus registros se borraran?",
+                        onConfirmBtnTap: () async{
+                          await PeopleController.removePerson(person);
+                          await QuickAlert.show(context: context, type: QuickAlertType.success, text: "La persoba se elimino exitosamente", showCancelBtn: false, confirmBtnText: "Aceptar");
+                          Navigator.of(context).pop();
+                          Navigator.of(context).pop();
+                        },);
+                      // 
+                      }, 
+                      icon: Icon(Icons.delete, color: Colors.white,))),
       ],
-      ));
-
+      ))
+    );
   }
 }
 

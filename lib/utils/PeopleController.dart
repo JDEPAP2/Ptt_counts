@@ -1,5 +1,8 @@
 import 'package:cuentas_ptt/class/Person.dart';
+import 'package:cuentas_ptt/class/Record.dart';
 import 'package:cuentas_ptt/files/PeopleManager.dart';
+import 'package:cuentas_ptt/files/RecordManager.dart';
+import 'package:cuentas_ptt/utils/RecordsController.dart';
 import 'package:cuentas_ptt/views/widgets/modals/Add_Person.dart';
 import 'package:objectid/objectid.dart';
 
@@ -19,7 +22,7 @@ class PeopleController{
   }
 
 
-  static Future<bool?> addPerson(String name) async{
+  static Future<bool> addPerson(String name) async{
     Person person = Person(id: ObjectId(), user: name);
     return await PeopleManager.writePerson(person);
   }
@@ -27,8 +30,14 @@ class PeopleController{
   static Future<bool?> removePerson(Person person) async{
     List<Person> people = List.empty(growable: true);
     people = await PeopleManager.readPeople();
-    List<Person> alterPeople =  people.where((e) => e.id != person.id).toList();
+    List<Record>? records = await RecordsController.getAllRecords();
+    if(records != null){
+      List<Record> alterRecord =  records.where((e) => e.nameId != person.id).toList();
+      await RecordManager.writeRecords(alterRecord);
+    }
+    List<Person> alterPeople =  people.where((e) => e.id != person.id).toList(); 
     return await PeopleManager.writePeople(alterPeople);
+    
   }
 
   static Future<bool?> alterPerson(Person person) async{

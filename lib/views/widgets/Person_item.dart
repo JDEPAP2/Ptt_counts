@@ -4,14 +4,16 @@ import 'package:cuentas_ptt/utils/Format.dart';
 import 'package:cuentas_ptt/views/Page_switcher.dart';
 import 'package:cuentas_ptt/views/widgets/modals/Info_Person.dart';
 import 'package:flutter/material.dart';
+import 'package:objectid/objectid.dart';
 
 class PersonItem extends StatefulWidget{
   Function getState, index;
   Person person;
-  PersonItem({required this.getState, required this.person, required this.index});
+  Function? update;
+  PersonItem({required this.getState, required this.person, required this.index, this.update});
 
   @override
-  _PersonItemState createState() => _PersonItemState(getState: getState, index: index, person: person);
+  _PersonItemState createState() => _PersonItemState(getState: getState, index: index, person: person, update: update);
 }
 
 class _PersonItemState extends State<PersonItem> with TickerProviderStateMixin{
@@ -20,15 +22,16 @@ class _PersonItemState extends State<PersonItem> with TickerProviderStateMixin{
 
   @override
   void initState() {
-    transitionAnimationController: controller = BottomSheet.createAnimationController(this);
+    controller = BottomSheet.createAnimationController(this);
     controller.duration = Duration(seconds: 1);
   }
 
   Function getState, index;
   Person person;
-  _PersonItemState({required this.getState, required this.person, required this.index});
+  Function? update;
+  _PersonItemState({required this.getState, required this.person, required this.index, this.update});
 
-  handleModal(Widget modal, BuildContext context) async{
+  Future<dynamic> handleModal(Widget modal, BuildContext context) async{
     return await showModalBottomSheet(
       transitionAnimationController: controller,
       backgroundColor: Colors.transparent,
@@ -42,9 +45,33 @@ class _PersonItemState extends State<PersonItem> with TickerProviderStateMixin{
       @override
   Widget build(BuildContext context) {
     bool rtype = getState();
+
+    handleProgress(Future<dynamic> function) async{
+        showDialog(context: context, 
+          builder: (context){
+          return Center(child: CircularProgressIndicator(
+            backgroundColor: Colors.grey,
+            valueColor: AlwaysStoppedAnimation(AppColor.secondary),
+            strokeWidth: 10,
+          ));
+        });
+        var res = await function;
+        Navigator.of(context).pop();
+        return res;
+    }
+
     return InkWell(
       splashColor: AppColor.light,
-      onTap: () => handleModal(InfoPerson(getState: getState, person: person), context),
+      onTap: () async{
+        await handleModal(InfoPerson(getState: getState, person: person), context);
+        try {
+          await handleProgress(Future.delayed(Duration(milliseconds: 1000)));
+          update!();
+          getState(upd:true);
+        } catch (e) {
+          
+        }
+      },
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white.withOpacity(0.9),

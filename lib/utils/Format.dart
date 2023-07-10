@@ -55,7 +55,7 @@ class FormatValue{
     List numbers = number.toString().split("").reversed.toList();
     List newNumber = List.empty(growable: true);
     for (var i = 0; i < numbers.length; i++) {
-      if((i%3) == 0 && i != 0 && i != numbers.length-1){
+      if((i%3) == 0 && i != 0){
         newNumber.add(",");
       }
       newNumber.add(numbers[i]);
@@ -63,14 +63,40 @@ class FormatValue{
     String res = "";
     newNumber = newNumber.reversed.toList();
     newNumber.forEach((e) => res+=e);
+    print(res);
     return res;
   }
 }
 
 class FormatText{
   static toFirstUpperCase(String s){
+    try {
+      List<String> chars = s.split("");
+      chars[0] = chars[0].toUpperCase();
+      String res = "";
+      chars.forEach((e)=> res +=e);
+      return res;
+    } catch (e) {
+      return s;
+    }
+    
+  }
+
+  static removeSpaces(String s){
     List<String> chars = s.split("");
-    chars[0] = chars[0].toUpperCase();
+    if(chars.isEmpty){
+      return s;
+    }
+
+    while(true){
+      if(chars.length == 1){
+        break;}
+      if(chars[chars.length-1] == " "){
+        chars.removeLast();
+      }else{
+        break;
+      }
+    }
     String res = "";
     chars.forEach((e)=> res +=e);
     return res;
