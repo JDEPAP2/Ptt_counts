@@ -1,5 +1,6 @@
 import 'package:cuentas_ptt/class/Record.dart';
 import 'package:cuentas_ptt/files/RecordManager.dart';
+import 'package:cuentas_ptt/utils/Format.dart';
 import 'package:cuentas_ptt/views/widgets/modals/Add_Person.dart';
 import 'package:objectid/objectid.dart';
 
@@ -65,6 +66,46 @@ class RecordsController{
     records = await RecordManager.readRecords();
     if (records.isNotEmpty) {
       return records;
+    }
+    return null;
+  }
+
+  static Future<List<Record>?> getRecordsBy(String param, dynamic element, bool type) async{
+    List<Record> records = List.empty(growable: true);
+    records = await RecordManager.readRecords();
+    if(records.isNotEmpty){
+      records = records.where((e) => e.type == type).toList();
+      switch (param){
+        case "person":
+          String castElement = (element as String);
+          return records.where((e) => castElement == e.name).toList();
+        case "people":
+          List<String> castElement = (element as List<String>);
+          return records.where((e) => castElement.contains(e.name)).toList();
+        case "date":
+          DateTime castElement = (element as DateTime);
+          return records.where((e) => FormatDate.compareDates(e.date, castElement)).toList();
+        case "dateRange":
+          List<DateTime> castElement = (element as List<DateTime>);
+          records = records.where((e) => castElement[0].compareTo(e.date) <= 0).toList();
+          return records.where((e) => castElement[1].compareTo(e.date) >= 0).toList();
+        case "value":
+          double castElement = (element as double);
+          return records.where((e) => e.value == castElement).toList();
+        case "valueRange":
+          List<double> castElement = (element as List<double>);
+          records = records.where((e) => e.value >= castElement[0]).toList();
+          return records.where((e) => e.value <= castElement[1]).toList();
+        case "valueGt":
+          double castElement = (element as double);
+          return records.where((e) => e.value >= castElement).toList();
+        case "valueLt":
+          double castElement = (element as double);
+          return records.where((e) => e.value <= castElement).toList();
+        case "null":
+          return records;
+          
+      }
     }
     return null;
   }

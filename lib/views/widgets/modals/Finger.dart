@@ -4,6 +4,7 @@ import 'dart:math';
 
 import 'package:cuentas_ptt/utils/AppColor.dart';
 import 'package:cuentas_ptt/utils/Format.dart';
+import 'package:cuentas_ptt/views/Page_switcher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:function_tree/function_tree.dart';
@@ -94,7 +95,10 @@ class _FingerState extends State<Finger>{
                 child: IconButton(icon: Icon(Icons.fingerprint, color: Colors.white), iconSize: 80, padding: EdgeInsets.zero, onPressed: ()async{
                   await _authenticateWithBiometrics();
                   if(_authorized=="t"){
-                    Navigator.of(context).pop(true);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const PageSwitcher()),
+                    );
                   }
                 }),
         ),

@@ -38,6 +38,10 @@ class FormatDate{
 
   }
 
+  static bool compareDates(DateTime d2,DateTime d1 ){
+    return d1.day == d2.day && d1.month == d2.month && d1.year == d2.year;
+  }
+
   static String dateToString(DateTime v){
     return "${v.day}/${v.month}/${v.year}";
   }
@@ -66,10 +70,18 @@ class FormatValue{
     print(res);
     return res;
   }
+
+  static double StringToFormatDouble(String number){
+    try {
+      return double.parse(number.replaceAll(",", "").replaceAll("\$", ""));
+    } catch (e) {
+      return 0.0;
+    }
+  }
 }
 
 class FormatText{
-  static toFirstUpperCase(String s){
+  static String toFirstUpperCase(String s){
     try {
       List<String> chars = s.split("");
       chars[0] = chars[0].toUpperCase();
@@ -82,7 +94,7 @@ class FormatText{
     
   }
 
-  static removeSpaces(String s){
+  static String removeSpaces(String s){
     List<String> chars = s.split("");
     if(chars.isEmpty){
       return s;

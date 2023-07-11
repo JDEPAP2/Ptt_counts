@@ -20,7 +20,7 @@ class _PageSwitcherState extends State<PageSwitcher>{
 
   _PageSwitcherState();
 
-  PageController _pageController = PageController(initialPage: 0);
+  PageController _pageController = PageController(initialPage: 3);
     int _selectedIndex = 0;
 
   _onItemTapped(int index) {

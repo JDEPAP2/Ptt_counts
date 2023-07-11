@@ -4,6 +4,7 @@ import 'dart:math';
 
 import 'package:cuentas_ptt/utils/AppColor.dart';
 import 'package:cuentas_ptt/utils/Format.dart';
+import 'package:cuentas_ptt/views/Page_switcher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:function_tree/function_tree.dart';
@@ -64,7 +65,10 @@ class _PinState extends State<Pin>{
               List<int> test = values.values.toList();
               if(test[0] == checkV[0] && test[1] == checkV[1] && test[2] == checkV[2] && test[3] == checkV[3] && test[4] == checkV[4] && test[5] == checkV[5] && test[5] == checkV[5]){
                 await Future.delayed(Duration(seconds: 2));
-                Navigator.of(context).pop(true);
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const PageSwitcher()),
+                  );
               }
             })),
           ), 

@@ -207,7 +207,7 @@ class _InfoRecordState extends State<InfoRecord> with TickerProviderStateMixin{
                       setState(() {
                         this.bytes = bytes;
                       });
-                      if(await DataManager.writeStreamDataChoose("/${record.id}.png", bytes??Uint8List(1))){
+                      if(await DataManager.writeStreamDataChoose("/${record.id}.png", bytes??Uint8List(1)) != null){
                         await QuickAlert.show(context: context, type: QuickAlertType.success, text: "El archivo se descargo exitosamente", showCancelBtn: false, confirmBtnText: "Aceptar");
                         Navigator.of(context).pop();
                       }else{

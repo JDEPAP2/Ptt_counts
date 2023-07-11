@@ -36,20 +36,22 @@ class _PeopleState extends State<PeopleView>{
   }
 
   Future<void> handlePeople() async{
-      print("handleeeeeeeeeeeeeee");
-      people.clear();
-      setState(() {});
-      List<Person> peopleS = (await PeopleController.getPeople(limit: 50))??[];
-      List aux = List.empty(growable: true);
-      List<Record> records = await RecordsController.getRecords(getState())??[];
-      if(peopleS.isNotEmpty){
-        for(Person person in peopleS){
-          List count = records.where((e) => e.nameId == person.id).toList();
-          aux.add({"person": person,"index": count.length});
+      try {
+        print("handleeeeeeeeeeeeeee");
+        people.clear();
+        setState(() {});
+        List<Person> peopleS = (await PeopleController.getPeople(limit: 50))??[];
+        List aux = List.empty(growable: true);
+        List<Record> records = await RecordsController.getRecords(getState())??[];
+        if(peopleS.isNotEmpty){
+          for(Person person in peopleS){
+            List count = records.where((e) => e.nameId == person.id).toList();
+            aux.add({"person": person,"index": count.length});
+          }
         }
-      }
-      people = aux;
-      setState(() {});
+        people = aux;
+        setState(() {});
+      } catch (e) {}
   }
 
 

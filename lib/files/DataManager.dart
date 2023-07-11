@@ -36,9 +36,15 @@ class DataManager{
     return data;
   }
 
-  static writeData(String typeFile, List<dynamic> data ) async{
+  static writeData(String typeFile, List<dynamic> data, {bool choose = false}) async{
     try {
           String path= (await getApplicationDocumentsDirectory()).path;
+          if(choose){
+            String? selectedDirectory = await FilePicker.platform.getDirectoryPath();
+            if(selectedDirectory != null){
+              path = selectedDirectory;}
+          }
+          
           final File file = File('$path/$typeFile.txt');
           if(!(await file.exists())){
             file.writeAsString("");
@@ -60,43 +66,44 @@ class DataManager{
             }
           });
           file.writeAsStringSync(res);
-          print("-------------- pasooo ------------------");
+          return '$path/$typeFile.txt';
         } catch (e) {
-          print("------------------------errrrrorrrr-----------------------------\n" + e.toString());
+          return null;
     }
   }
 
-  static Future<bool> writeStreamDataChoose(String name, Uint8List list ) async{
+  static Future<String?> writeStreamDataChoose(String name, dynamic list ) async{
     try {
           String? selectedDirectory = await FilePicker.platform.getDirectoryPath();
           if(selectedDirectory != null){
-            File file = File( selectedDirectory + name);
+            File file = await File( selectedDirectory + name);
             if(!(await file.exists())){
-              await file.writeAsBytes(Uint8List(1));
+              await file.writeAsBytes(Uint8List(1), flush: true);
             }
-            await file.writeAsBytes(list);
-            return true;
+            await file.writeAsBytes(list, flush: true);
+            return selectedDirectory + name;
           }
-
-          return false;
+          return null;
         } catch (e) {
-          return false;
+          print(e);
+          return null;
 
     }
 
   }
 
-    static Future<String?> writeStreamData(String name, Uint8List list ) async{
+    static Future<String?> writeStreamData(String name, dynamic list ) async{
     try {
           String path = (await getApplicationDocumentsDirectory()).path;
-          File file = File( path + name);
+          File file = await File(path + name);
           if(!(await file.exists())){
-            await file.writeAsBytes(Uint8List(1));
+            await file.writeAsBytes(Uint8List(1), flush: true);
           }
-          await file.writeAsBytes(list);
+          await file.writeAsBytes(list, flush: true);
 
           return path + name;
         } catch (e) {
+          print(e);
           return null;
     }
 

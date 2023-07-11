@@ -64,13 +64,7 @@ class _LockViewState extends State<LockView> with TickerProviderStateMixin{
                 padding: EdgeInsets.all(10),
                 decoration: BoxDecoration(color: AppColor().getPrimary(true), borderRadius: BorderRadius.circular(100)),
                 child: IconButton(icon: Icon(Icons.fingerprint, color: Colors.white), iconSize: 70, padding: EdgeInsets.zero, onPressed: () async{
-                  bool? res = await handleModal(Finger(), context);
-                  if(res != null && res){
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const PageSwitcher()),
-                    );
-                  }
+                  await handleModal(Finger(), context);
                 }),
                 ),
               ),
@@ -81,13 +75,7 @@ class _LockViewState extends State<LockView> with TickerProviderStateMixin{
                 padding: EdgeInsets.all(10),
                 decoration: BoxDecoration(color: AppColor().getPrimary(false), borderRadius: BorderRadius.circular(200)),
                 child: IconButton(icon: Icon(Icons.pin, color: Colors.white), iconSize: 70, padding: EdgeInsets.zero, onPressed: () async{
-                  bool? res = await handleModal(Pin(), context);
-                  if(res != null && res){
-                      Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const PageSwitcher()),
-                    );
-                  }
+                  await handleModal(Pin(), context);
                 }),
                 ),
               ) 
