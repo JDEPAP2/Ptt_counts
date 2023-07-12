@@ -28,7 +28,7 @@ class _RecordItemState extends State<RecordItem> with TickerProviderStateMixin{
   @override
   void initState() {
     controller = BottomSheet.createAnimationController(this);
-    controller.duration = Duration(seconds: 1);
+    controller.duration = Duration(seconds: 1);;
   }
 
   Future<dynamic> handleModal(Widget modal, BuildContext context) async{

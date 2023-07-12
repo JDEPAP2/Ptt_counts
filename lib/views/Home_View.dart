@@ -32,7 +32,7 @@ class _StateHome extends State<HomeView> with TickerProviderStateMixin{
     rtype = getState();
     handleAsync();
     controller = BottomSheet.createAnimationController(this);
-    controller.duration = Duration(seconds: 2);
+    controller.duration = Duration(seconds: 1);
   }
 
   handleAsync () async {

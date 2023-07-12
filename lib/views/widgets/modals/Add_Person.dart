@@ -29,6 +29,7 @@ class _AddPersonState extends State<AddPerson>{
     if(people.length > 3){
       return 100;
     }
+
     return people.length * 60;
   }
   
@@ -75,6 +76,8 @@ class _AddPersonState extends State<AddPerson>{
       backgroundColor: Colors.transparent,
         contentPadding: EdgeInsets.all(0),
         content: Container(
+
+            width: 300,
             padding: EdgeInsets.all(5),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),

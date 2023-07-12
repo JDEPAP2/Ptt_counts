@@ -35,7 +35,7 @@ class _AddRecordState extends State<AddRecord> with TickerProviderStateMixin{
   void initState() {
     // db = Database();
     controller = BottomSheet.createAnimationController(this);
-    controller.duration = Duration(seconds: 1);
+    controller.duration = Duration(seconds: 1);;
     fecha = FormatDate.dateToString(DateTime.now());
     value = "";
     obser = "";

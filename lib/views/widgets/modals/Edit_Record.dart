@@ -48,7 +48,7 @@ class _EditRegisterState extends State<EditRegister> with TickerProviderStateMix
       typeR = !val;
     }
     controller = BottomSheet.createAnimationController(this);
-    controller.duration = Duration(seconds: 1);
+    controller.duration = Duration(seconds: 1);;
     super.initState();
   }
 

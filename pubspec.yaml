@@ -91,7 +91,6 @@ flutter:
   assets:
     - assets/images/
     - assets/pdf/taller.pdf
-    - .env
 
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg

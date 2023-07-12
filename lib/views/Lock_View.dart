@@ -22,7 +22,7 @@ class _LockViewState extends State<LockView> with TickerProviderStateMixin{
     @override
   void initState() {
     controller = BottomSheet.createAnimationController(this);
-    controller.duration = Duration(seconds: 2);
+    controller.duration = Duration(seconds: 1);
   }
 
 

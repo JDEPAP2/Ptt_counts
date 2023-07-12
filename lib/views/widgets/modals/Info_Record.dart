@@ -60,7 +60,7 @@ class _InfoRecordState extends State<InfoRecord> with TickerProviderStateMixin{
         color: AppColor.light,
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      height: MediaQuery.of(context).viewInsets.bottom == 0? MediaQuery.of(context).size.height * 0.6: double.maxFinite,
+      height: MediaQuery.of(context).viewInsets.bottom == 0? MediaQuery.of(context).size.height * 0.635: double.maxFinite,
       child: ScrollConfiguration(
         behavior: const ScrollBehavior().copyWith(overscroll: false),
         child: ListView(
@@ -76,12 +76,12 @@ class _InfoRecordState extends State<InfoRecord> with TickerProviderStateMixin{
           WidgetsToImage(
             child: Container(
             decoration: BoxDecoration(
-              boxShadow: [BoxShadow(
-                offset: Offset(2, 2),
-                blurRadius: 5,
-                spreadRadius: 0.5,
-                color: Colors.black12
-              )]
+              // boxShadow: [BoxShadow(
+              //   offset: Offset(2, 2),
+              //   blurRadius: 5,
+              //   spreadRadius: 0.5,
+              //   color: Colors.black12
+              // )]
             ),
             child: ClipPath(
             clipper: ZigZagClipper(),
@@ -187,7 +187,7 @@ class _InfoRecordState extends State<InfoRecord> with TickerProviderStateMixin{
               
                 ],
               ),
-              height: record.observation == null ||record.observation == ""? 270:305,
+              height: record.observation == null ||record.observation == ""? 270:320,
           )),
           )
       ,

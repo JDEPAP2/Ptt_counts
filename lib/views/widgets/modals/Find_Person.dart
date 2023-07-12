@@ -30,6 +30,9 @@ class _FindPersonState extends State<FindPerson>{
     if(people.length > 5){
       return 200;
     }
+    if(people.isEmpty){
+      return 60;
+    }
     return people.length * 60;
   }
   
@@ -49,6 +52,7 @@ class _FindPersonState extends State<FindPerson>{
       backgroundColor: Colors.transparent,
         contentPadding: EdgeInsets.all(0),
         content: Container(
+            width: 300,
             padding: EdgeInsets.all(5),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
@@ -92,6 +96,7 @@ class _FindPersonState extends State<FindPerson>{
                   padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                   height: getHeight(),
                   child: ListView.separated(
+                    // shrinkWrap: true,
                     itemBuilder: (context, index) => Container(padding: EdgeInsets.all(10),child: InkWell(
                       onTap: () => setState(() {
                         controller.text = people[index].user;

@@ -23,7 +23,7 @@ class _PersonItemState extends State<PersonItem> with TickerProviderStateMixin{
   @override
   void initState() {
     controller = BottomSheet.createAnimationController(this);
-    controller.duration = Duration(seconds: 1);
+    controller.duration = Duration(seconds: 1);;
   }
 
   Function getState, index;

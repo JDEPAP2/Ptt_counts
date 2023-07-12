@@ -182,6 +182,7 @@ class _InfoPersonState extends State<InfoPerson>{
             handleList(selectedIndex, null);
           },
           child: ListView.separated(
+          shrinkWrap: true,
           itemBuilder: (context, index) => Container(
               margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
               padding: EdgeInsets.all(8),
